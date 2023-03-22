@@ -139,9 +139,13 @@ public class Config extends AppCompatActivity{
         rx.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Log.e("setOnClickListener", "onClick: ");
                 begin();
+                Log.e("begin", "onClick: ");
                 Start_Recieve = true;
+                Log.e("Start_Recieve", "onClick: ");
                 setupListView();
+                Log.e("setupListView", "onClick: ");
 
             }
         });
@@ -223,7 +227,7 @@ public class Config extends AppCompatActivity{
                     characteristic_RX.setValue(data);
                     gatt.writeCharacteristic(characteristic_RX);
                 } else {
-                    Log.e("ERROR", "無法找到指定的特徵");
+                    Log.e("ERROR", "BEGIN無法找到指定的特徵");
                 }
             }
             else {
@@ -234,7 +238,7 @@ public class Config extends AppCompatActivity{
         }
     }
 
-    
+
 
     private void setupListView() {
         ListView listView = findViewById(R.id.datd_list);
