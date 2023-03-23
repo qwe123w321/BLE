@@ -35,23 +35,27 @@ public class Questionnaire extends AppCompatActivity implements Serializable{
     public static class Question implements Serializable {
         String questionText;
         List<String> options;
-
-        public Question(String questionText, List<String> options) {
+        List<Integer> optionImages; // 添加這個屬性
+        int answer = -1; // 將此添加到類中，以表示未回答的問題
+        public Question(String questionText, List<String> options, List<Integer> optionImages) {
             this.questionText = questionText;
             this.options = options;
+            this.optionImages = optionImages; // 初始化這個屬性
         }
     }
 
     private void initQuestions() {
         questions = new ArrayList<>();
-
+        List<Integer> optionImages1 = Arrays.asList(R.drawable.option_1, R.drawable.option_2, R.drawable.option_3, R.drawable.option_5);
+        List<Integer> optionImages2 = Arrays.asList(R.drawable.option_1, R.drawable.option_2, R.drawable.option_3, R.drawable.option_4, R.drawable.option_5);
         // 前两个问题有4个选项
-        questions.add(new Question("问题1", Arrays.asList("选项1", "选项2", "选项3", "选项4")));
-        questions.add(new Question("问题2", Arrays.asList("选项1", "选项2", "选项3", "选项4")));
+        questions.add(new Question("问题1", Arrays.asList("选项1", "选项2", "选项3", "选项4"),optionImages1));
+        questions.add(new Question("问题2", Arrays.asList("选项1", "选项2", "选项3", "选项4")optionImages1));
 
         // 后两个问题有5个选项
-        questions.add(new Question("问题3", Arrays.asList("选项1", "选项2", "选项3", "选项4", "选项5")));
-        questions.add(new Question("问题4", Arrays.asList("选项1", "选项2", "选项3", "选项4", "选项5")));
+        questions.add(new Question("问题3", Arrays.asList("选项1", "选项2", "选项3", "选项4", "选项5"),optionImages2));
+        questions.add(new Question("问题4", Arrays.asList("选项1", "选项2", "选项3", "选项4", "选项5"),optionImages2));
+
     }
 
     @Override
@@ -103,6 +107,29 @@ public class Questionnaire extends AppCompatActivity implements Serializable{
             }
         });
     }
+
+    private RadioButton createOptionRadioButton(String text, int imageResource) {
+        RadioButton radioButton = new RadioButton(this);
+        radioButton.setText(text);
+        radioButton.setCompoundDrawablesWithIntrinsicBounds(imageResource, 0, 0, 0); // 在選項文字前面添加圖片
+        radioButton.setPadding(8, 8, 8, 8);
+        return radioButton;
+    }
+
+    private void showQuestion(Question question) {
+        questionText.setText(question.questionText);
+        optionGroup.removeAllViews();
+
+        for (int i = 0; i < question.options.size(); i++) {
+            RadioButton radioButton = createOptionRadioButton(question.options.get(i), question.optionImages.get(i));
+            optionGroup.addView(radioButton);
+        }
+
+        if (question.answer != -1) {
+            ((RadioButton) optionGroup.getChildAt(question.answer)).setChecked(true);
+        }
+    }
+
     public List<Question> getQuestions() {
         return questions;
     }
