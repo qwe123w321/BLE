@@ -29,7 +29,7 @@ public class PreviewActivity extends AppCompatActivity {
         setContentView(R.layout.activity_preview);
         backButton = findViewById(R.id.button_back_to_questionnaire);
         finishButton = findViewById(R.id.button_finish_questionnaire);
-        answersLayout = findViewById(R.id.answers_layout);
+        answersLayout = findViewById(R.id.answer_layout);
         sharedPreferences = getSharedPreferences("answers", Context.MODE_PRIVATE);
 
         backButton.setOnClickListener(new View.OnClickListener() {
