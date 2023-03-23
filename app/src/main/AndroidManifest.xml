@@ -29,6 +29,10 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.PelvicFloorMuscleTraining"
         tools:targetApi="31">
+        <meta-data
+            android:name="com.google.android.actions"
+            android:resource="@xml/red_border" />
+
         <activity
             android:name=".PreviewActivity"
             android:exported="false" />
