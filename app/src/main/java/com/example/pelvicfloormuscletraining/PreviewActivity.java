@@ -35,7 +35,7 @@ public class PreviewActivity extends AppCompatActivity {
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                finish();
             }
         });
         finishButton.setOnClickListener(new View.OnClickListener() {

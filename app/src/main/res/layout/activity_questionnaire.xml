@@ -31,13 +31,13 @@
 
         <TextView
             android:id="@+id/question_text"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="16dp"
-            android:textAlignment="center"
             android:layout_gravity="center"
+            android:padding="16dp"
             android:text="問題描述"
-            android:textSize="18sp" />
+            android:textAlignment="center"
+            android:textSize="40dp" />
 
         <ScrollView
             android:layout_width="match_parent"
@@ -47,7 +47,7 @@
 
             <RadioGroup
                 android:id="@+id/option_group"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:padding="16dp">
@@ -67,14 +67,16 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="上一題" />
+                android:text="上一題"
+                android:textSize="40dp"/>
 
             <Button
                 android:id="@+id/next_button"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="下一題" />
+                android:text="下一題"
+                android:textSize="40dp"/>
 
         </LinearLayout>
 
