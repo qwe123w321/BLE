@@ -6,7 +6,6 @@
     android:layout_height="match_parent"
     tools:context=".Questionnaire">
 
-    <?xml version="1.0" encoding="utf-8"?>
     <ImageButton
         android:id="@+id/leave6"
         android:layout_width="match_parent"

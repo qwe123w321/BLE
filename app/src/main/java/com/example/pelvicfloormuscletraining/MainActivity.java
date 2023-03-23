@@ -296,7 +296,7 @@ public class MainActivity extends AppCompatActivity {
         intentFilter.addAction(BluetoothLeService.ACTION_GATT_SERVICES_DISCOVERED);
         intentFilter.addAction(BluetoothLeService.ACTION_DATA_AVAILABLE);
         registerReceiver(mGattUpdateReceiver, intentFilter);
-        setupMonthlyReminder();  //提醒
+        //setupMonthlyReminder();  //提醒
         training.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -350,27 +350,27 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
-    private void setupMonthlyReminder() {
-        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-        Intent alarmIntent = new Intent(this, AlarmReceiver.class);
-
-        PendingIntent pendingIntent = getBroadcast(this, 0, alarmIntent, FLAG_UPDATE_CURRENT);
-
-        // 设置提醒的时间
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(System.currentTimeMillis());
-        calendar.set(Calendar.DAY_OF_MONTH, 1);  // 每月的第一天
-        calendar.set(Calendar.HOUR_OF_DAY, 9);   // 9点
-        calendar.set(Calendar.MINUTE, 0);
-        calendar.set(Calendar.SECOND, 0);
-
-        // 如果当前时间已经超过提醒时间，则将其设置为下个月
-        if (calendar.getTimeInMillis() < System.currentTimeMillis()) {
-            calendar.add(Calendar.MONTH, 1);
-        }
-
-        alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY * 30, pendingIntent);
-    }
+//    private void setupMonthlyReminder() {
+//        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+//        Intent alarmIntent = new Intent(this, AlarmReceiver.class);
+//
+//        PendingIntent pendingIntent = getBroadcast(this, 0, alarmIntent, FLAG_UPDATE_CURRENT);
+//
+//        // 设置提醒的时间
+//        Calendar calendar = Calendar.getInstance();
+//        calendar.setTimeInMillis(System.currentTimeMillis());
+//        calendar.set(Calendar.DAY_OF_MONTH, 1);  // 每月的第一天
+//        calendar.set(Calendar.HOUR_OF_DAY, 9);   // 9点
+//        calendar.set(Calendar.MINUTE, 0);
+//        calendar.set(Calendar.SECOND, 0);
+//
+//        // 如果当前时间已经超过提醒时间，则将其设置为下个月
+//        if (calendar.getTimeInMillis() < System.currentTimeMillis()) {
+//            calendar.add(Calendar.MONTH, 1);
+//        }
+//
+//        alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY * 30, pendingIntent);
+//    }
 
     private void saveCsvFile(String csvData) {
         String fileName = "received_data.csv";
