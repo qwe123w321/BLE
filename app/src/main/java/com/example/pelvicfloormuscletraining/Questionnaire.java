@@ -50,7 +50,7 @@ public class Questionnaire extends AppCompatActivity implements Serializable{
         List<Integer> optionImages2 = Arrays.asList(R.drawable.option_1, R.drawable.option_2, R.drawable.option_3, R.drawable.option_4, R.drawable.option_5);
         // 前两个问题有4个选项
         questions.add(new Question("问题1", Arrays.asList("选项1", "选项2", "选项3", "选项4"),optionImages1));
-        questions.add(new Question("问题2", Arrays.asList("选项1", "选项2", "选项3", "选项4")optionImages1));
+        questions.add(new Question("问题2", Arrays.asList("选项1", "选项2", "选项3", "选项4"),optionImages1));
 
         // 后两个问题有5个选项
         questions.add(new Question("问题3", Arrays.asList("选项1", "选项2", "选项3", "选项4", "选项5"),optionImages2));

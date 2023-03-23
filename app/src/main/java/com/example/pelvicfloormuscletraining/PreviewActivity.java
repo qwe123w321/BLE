@@ -1,6 +1,7 @@
 package com.example.pelvicfloormuscletraining;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.viewpager.widget.ViewPager;
 
 import android.content.Context;
@@ -75,7 +76,7 @@ public class PreviewActivity extends AppCompatActivity {
                 answerView.setText(answer);
             } else {
                 answerView.setText("尚未做答，請回去填寫");
-                answerView.setBackgroundResource(R.drawable.red_border); // 紅色邊框背景
+                answerView.setBackground(ContextCompat.getDrawable(this, R.drawable.red_border)); // 紅色邊框背景
             }
             answersLayout.addView(answerView);
         }
