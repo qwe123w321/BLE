@@ -1,5 +1,6 @@
 package com.example.pelvicfloormuscletraining;
 
+import static android.app.PendingIntent.*;
 import static android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS;
 
 import androidx.annotation.NonNull;
@@ -10,11 +11,14 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.Manifest;
+import android.app.AlarmManager;
 import android.app.AlertDialog;
+import android.app.PendingIntent;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothGattCharacteristic;
+import android.bluetooth.BluetoothGattDescriptor;
 import android.bluetooth.BluetoothGattService;
 import android.bluetooth.BluetoothManager;
 import android.bluetooth.le.BluetoothLeScanner;
@@ -27,6 +31,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.IntentSender;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
@@ -36,6 +41,7 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.media.Image;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.IBinder;
 import android.os.ParcelUuid;
 import android.provider.Settings;
@@ -59,11 +65,16 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
 import java.util.ConcurrentModificationException;
 import java.util.Date;
 import java.util.Iterator;
@@ -86,6 +97,8 @@ public class MainActivity extends AppCompatActivity {
     private UUID characteristicUuid = UUID.fromString("beb5483e-36e1-4688-b7f5-ea07361b26a8");
     private UUID SERVICE_UUID = UUID.fromString("6e400001-b5a3-f393-e0a9-e50e24dcca9e");
     private UUID CHARACTERISTIC_UUID_RX = UUID.fromString("6e400002-b5a3-f393-e0a9-e50e24dcca9e");
+    private UUID CHARACTERISTIC_UUID_TXXX = UUID.fromString("6e400005-b5a3-f393-e0a9-e50e24dcca9e");
+
     private ImageButton training;
     private ImageButton config;
     private String mPassword = "cif306"; // 正確的密碼
@@ -97,12 +110,46 @@ public class MainActivity extends AppCompatActivity {
 
     private static final String START_DATE = "start_date";
     private static final String TODAY_TIMES = "todaytimes";
+
     private int today_times = 0;
     private ImageView first_check;
     private ImageView second_check;
     private ImageView third_check;
     private String current_Date;
     private String record_Date;
+    private StringBuilder receivedDataCsv;
+    private BluetoothGattCharacteristic characteristic_TXXX;
+    private static final int REQUEST_EXTERNAL_STORAGE_PERMISSION = 100;
+    private void checkExternalStoragePermission() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_EXTERNAL_STORAGE_PERMISSION);
+        }
+    }
+//    private final ServiceConnection mServiceConnection = new ServiceConnection() {
+//    @Override
+//    public void onServiceConnected(ComponentName componentName, IBinder service) {
+//        BluetoothLeService.LocalBinder binder = (BluetoothLeService.LocalBinder) service;
+//        mBluetoothLeService = binder.getService();
+//        mBound = true;
+//        // 這裡可以繼續使用已經連接的藍牙服務
+//    }
+//
+//    @Override
+//    public void onServiceDisconnected(ComponentName componentName) {
+//        mBound = false;
+//    }
+//};
+//    private final BroadcastReceiver mGattUpdateReceiver = new BroadcastReceiver() {
+//        @Override
+//        public void onReceive(Context context, Intent intent) {
+//            final String action = intent.getAction();
+//            if (BluetoothLeService.ACTION_GATT_CONNECTED.equals(action)) {
+//                mBound = true;
+//            } else if (BluetoothLeService.ACTION_GATT_DISCONNECTED.equals(action)) {
+//                mBound = false;
+//            }
+//        }
+//    };
     private final ServiceConnection mServiceConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName componentName, IBinder service) {
@@ -110,6 +157,17 @@ public class MainActivity extends AppCompatActivity {
             mBluetoothLeService = binder.getService();
             mBound = true;
             // 這裡可以繼續使用已經連接的藍牙服務
+            BluetoothGatt gatt = mBluetoothLeService.getBluetoothGatt();
+            if (gatt != null && gatt.getService(SERVICE_UUID) != null) {
+                BluetoothGattCharacteristic characteristic_TXXX = mBluetoothLeService.getCharacteristic(SERVICE_UUID, CHARACTERISTIC_UUID_TXXX);
+
+                if (characteristic_TXXX != null) {
+                    // 設置通知
+                    mBluetoothLeService.setCharacteristicNotification(characteristic_TXXX, true);
+                } else {
+                    Log.e("ERROR", "無法找到指定的特徵");
+                }
+            }
         }
 
         @Override
@@ -117,16 +175,52 @@ public class MainActivity extends AppCompatActivity {
             mBound = false;
         }
     };
-    // 設置廣播接收器
+     //設置廣播接收器
+
     private final BroadcastReceiver mGattUpdateReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             final String action = intent.getAction();
+            Log.d("onReceive()", "Action: " + action);
+            Log.d("onReceive()", "UUID: " + intent.getStringExtra(BluetoothLeService.EXTRA_UUID));
+            Log.d("onReceive()", "Data: " + Arrays.toString(intent.getByteArrayExtra(BluetoothLeService.EXTRA_DATA)));
             if (BluetoothLeService.ACTION_GATT_CONNECTED.equals(action)) {
                 mBound = true;
             } else if (BluetoothLeService.ACTION_GATT_DISCONNECTED.equals(action)) {
                 mBound = false;
+            }else if (BluetoothLeService.ACTION_GATT_SERVICES_DISCOVERED.equals(action)) {
+                BluetoothGattCharacteristic characteristic_TXXX = mBluetoothLeService.getCharacteristic(SERVICE_UUID, CHARACTERISTIC_UUID_TXXX);
+                // Enable notifications for the target characteristic
+                mBluetoothLeService.setCharacteristicNotification(
+                        characteristic_TXXX, true);
             }
+//            String uuid = intent.getStringExtra(BluetoothLeService.EXTRA_UUID);
+//
+//            if (BluetoothLeService.ACTION_DATA_AVAILABLE.equals(action) && CHARACTERISTIC_UUID_TXXX.toString().equals(uuid)) {
+//                byte[] dataBytes = intent.getByteArrayExtra(BluetoothLeService.EXTRA_DATA);
+//                if (dataBytes != null) {
+//                    String data = new String(dataBytes);
+//                    if ("ENDINGUPDATE".equals(data)) {
+//                        if(receivedDataCsv!=null){
+//                            saveCsvFile(receivedDataCsv.toString());
+//                            receivedDataCsv.setLength(0);
+//                            Log.e("ENDINGUPDATE", "ENDINGUPDATE");
+//                        }
+//                    } else {
+//                        receivedDataCsv.append(data).append("\n");
+//                        Log.e("DATA", "UPDATE......");
+//                    }
+//                }
+//            } else if (BluetoothLeService.ACTION_GATT_DISCONNECTED.equals(action)) {
+//                if(receivedDataCsv!=null){
+//                    saveCsvFile(receivedDataCsv.toString());
+//                    receivedDataCsv.setLength(0);
+//                    Log.e("ACTION_GATT_DISCONNECTED", "ACTION_GATT_DISCONNECTED");
+//                }
+//            }
+//            else {
+//                Log.e("NO", "onReceive: NO UPDATE");
+//            }
         }
     };
     private void LocationEnabled() {
@@ -187,13 +281,22 @@ public class MainActivity extends AppCompatActivity {
         checkPermission();
         Log.e("checkPermission()", "END");
         LocationEnabled();
+        checkExternalStoragePermission();
+        //檢查時間與做幾次
+        checkdate_times();
         Intent intent = new Intent(this, BluetoothLeService.class);
         startService(intent);
         bindService(intent, mServiceConnection, BIND_AUTO_CREATE);
-        //檢查時間與做幾次
-        checkdate_times();
 
-
+        receivedDataCsv = new StringBuilder();
+        // Register the BroadcastReceiver
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(BluetoothLeService.ACTION_GATT_CONNECTED);
+        intentFilter.addAction(BluetoothLeService.ACTION_GATT_DISCONNECTED);
+        intentFilter.addAction(BluetoothLeService.ACTION_GATT_SERVICES_DISCOVERED);
+        intentFilter.addAction(BluetoothLeService.ACTION_DATA_AVAILABLE);
+        registerReceiver(mGattUpdateReceiver, intentFilter);
+        setupMonthlyReminder();  //提醒
         training.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -217,6 +320,8 @@ public class MainActivity extends AppCompatActivity {
                 else{
                     Log.e("ERROE", "mBluetoothLeService != null && mBluetoothLeService.isConnected()");
                 }
+                Log.e("ERROR", "mBluetoothLeService != null" + String.valueOf(mBluetoothLeService != null));
+                Log.e("ERROR", "mBluetoothLeService.isConnected()" + String.valueOf(mBluetoothLeService.isConnected()));
                 bundle.putInt("connect",connect);
                 // 將 Bundle 放入 Intent 物件中
                 intent2.putExtras(bundle);
@@ -230,7 +335,64 @@ public class MainActivity extends AppCompatActivity {
                 showPasswordDialog();
             }
         });
+        if (mBluetoothLeService != null && mBluetoothLeService.isConnected()) {
+            Log.e("Y", "onClick: 1");
+            BluetoothGatt gatt = mBluetoothLeService.getBluetoothGatt();
+            Log.e("Y", "onClick: 2");
+            if (gatt != null && gatt.getService(SERVICE_UUID) != null) {
+                BluetoothGattCharacteristic characteristic_TXXX = mBluetoothLeService.getCharacteristic(SERVICE_UUID, CHARACTERISTIC_UUID_TXXX);
+                Log.e("Y", "onClick: 3");
+                if (characteristic_TXXX != null) {
+                    mBluetoothLeService.setCharacteristicNotification(characteristic_TXXX, true);
+                } else {
+                    Log.e("ERROR", "無法找到指定的特徵");
+                }
+            }
+        }
     }
+    private void setupMonthlyReminder() {
+        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        Intent alarmIntent = new Intent(this, AlarmReceiver.class);
+
+        PendingIntent pendingIntent = getBroadcast(this, 0, alarmIntent, FLAG_UPDATE_CURRENT);
+
+        // 设置提醒的时间
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(System.currentTimeMillis());
+        calendar.set(Calendar.DAY_OF_MONTH, 1);  // 每月的第一天
+        calendar.set(Calendar.HOUR_OF_DAY, 9);   // 9点
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+
+        // 如果当前时间已经超过提醒时间，则将其设置为下个月
+        if (calendar.getTimeInMillis() < System.currentTimeMillis()) {
+            calendar.add(Calendar.MONTH, 1);
+        }
+
+        alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY * 30, pendingIntent);
+    }
+
+    private void saveCsvFile(String csvData) {
+        String fileName = "received_data.csv";
+        File path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
+
+        try {
+            File file = new File(path, fileName);
+            FileOutputStream fileOutputStream = new FileOutputStream(file, true);
+            OutputStreamWriter outputStreamWriter = new OutputStreamWriter(fileOutputStream);
+            BufferedWriter bufferedWriter = new BufferedWriter(outputStreamWriter);
+            bufferedWriter.write(csvData);
+            bufferedWriter.close();
+            outputStreamWriter.close();
+            fileOutputStream.close();
+
+            Toast.makeText(this, "Data saved to " + file.getAbsolutePath(), Toast.LENGTH_SHORT).show();
+        } catch (IOException e) {
+            Toast.makeText(this, "Error saving data: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+            e.printStackTrace();
+        }
+    }
+
 
     private void checkdate_times(){
         sharedPreferences = getSharedPreferences(TRAINING_RECORD, MODE_PRIVATE);
@@ -322,6 +484,20 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
         //檢查時間與做幾次
         checkdate_times();
+        if (mBluetoothLeService != null && mBluetoothLeService.isConnected()) {
+            Log.e("Y", "onClick: 1");
+            BluetoothGatt gatt = mBluetoothLeService.getBluetoothGatt();
+            Log.e("Y", "onClick: 2");
+            if (gatt != null && gatt.getService(SERVICE_UUID) != null) {
+                BluetoothGattCharacteristic characteristic_TXXX = mBluetoothLeService.getCharacteristic(SERVICE_UUID, CHARACTERISTIC_UUID_TXXX);
+                Log.e("Y", "onClick: 3");
+                if (characteristic_TXXX != null) {
+                    mBluetoothLeService.setCharacteristicNotification(characteristic_TXXX, true);
+                } else {
+                    Log.e("ERROR", "無法找到指定的特徵");
+                }
+            }
+        }
 //        mBluetoothLeService.setOnDataReceivedListener(data_test -> {
 //            // Handle received data
 //            saveDataToCSV(data_test);
@@ -332,23 +508,16 @@ public class MainActivity extends AppCompatActivity {
         super.onPause();
         //mBluetoothLeService.setOnDataReceivedListener(null);
     }
-    private void saveDataToCSV(byte[] data) {
-        File csvFile = new File(getFilesDir(), "data.csv");
-        try (FileWriter fileWriter = new FileWriter(csvFile, true)) {
-            String csvLine = convertDataToCSVLine(data);
-            fileWriter.append(csvLine);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-    private String convertDataToCSVLine(byte[] data) {
-        StringBuilder csvLine = new StringBuilder();
-        for (byte b : data) {
-            csvLine.append(String.format("%02X", b)).append(",");
-        }
-        csvLine.append("\n");
-        return csvLine.toString();
-    }
+//    private void saveDataToCSV(byte[] data) {
+//        File csvFile = new File(getFilesDir(), "data.csv");
+//        try (FileWriter fileWriter = new FileWriter(csvFile, true)) {
+//            String csvLine = convertDataToCSVLine(data);
+//            fileWriter.append(csvLine);
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//    }
+
 //    @Override
 //    protected void onResume() {
 //        super.onResume();
@@ -465,4 +634,28 @@ public class MainActivity extends AppCompatActivity {
     }
 }
 
-
+//    private final ServiceConnection mServiceConnection = new ServiceConnection() {
+//    @Override
+//    public void onServiceConnected(ComponentName componentName, IBinder service) {
+//        BluetoothLeService.LocalBinder binder = (BluetoothLeService.LocalBinder) service;
+//        mBluetoothLeService = binder.getService();
+//        mBound = true;
+//        // 這裡可以繼續使用已經連接的藍牙服務
+//    }
+//
+//    @Override
+//    public void onServiceDisconnected(ComponentName componentName) {
+//        mBound = false;
+//    }
+//};
+//    private final BroadcastReceiver mGattUpdateReceiver = new BroadcastReceiver() {
+//        @Override
+//        public void onReceive(Context context, Intent intent) {
+//            final String action = intent.getAction();
+//            if (BluetoothLeService.ACTION_GATT_CONNECTED.equals(action)) {
+//                mBound = true;
+//            } else if (BluetoothLeService.ACTION_GATT_DISCONNECTED.equals(action)) {
+//                mBound = false;
+//            }
+//        }
+//    };

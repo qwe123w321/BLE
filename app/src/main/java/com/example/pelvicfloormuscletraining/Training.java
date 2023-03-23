@@ -37,6 +37,7 @@ public class Training extends AppCompatActivity {
     public static final UUID CLIENT_CHARACTERISTIC_CONFIG_DESCRIPTOR_UUID = UUID.fromString("00002902-0000-1000-8000-00805f9b34fb");
     private String ReceivedData_TX = "";
     private String ReceivedData_TXX = "";
+    private String newTX = "";
 
     private final ServiceConnection mServiceConnection = new ServiceConnection() {
         @Override
@@ -47,26 +48,48 @@ public class Training extends AppCompatActivity {
             // 這裡可以繼續使用已經連接的藍牙服務
             BluetoothGatt gatt = mBluetoothLeService.getBluetoothGatt();
             if (gatt != null && gatt.getService(SERVICE_UUID) != null) {
-                BluetoothGattCharacteristic characteristic_TX = mBluetoothLeService.getCharacteristic(SERVICE_UUID, CHARACTERISTIC_UUID_TX);
                 BluetoothGattCharacteristic characteristic_TXX = mBluetoothLeService.getCharacteristic(SERVICE_UUID, CHARACTERISTIC_UUID_TXX);
-                if (characteristic_TX != null) {
-                    // 設置通知
-                    mBluetoothLeService.setCharacteristicNotification(characteristic_TX, true);
-                    BluetoothGattDescriptor descriptor = characteristic_TX.getDescriptor(CLIENT_CHARACTERISTIC_CONFIG_DESCRIPTOR_UUID);
-                    descriptor.setValue(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE);
-                    mBluetoothLeService.writeDescriptor(descriptor);
-                    Log.e("setCharacteristicNotification", "characteristic_TX");
-                } else {
-                    Log.e("ERROR", "無法找到指定的特徵_TX");
-                }if (characteristic_TXX != null) {
-                    // 設置通知
+                BluetoothGattCharacteristic characteristic_TX = mBluetoothLeService.getCharacteristic(SERVICE_UUID, CHARACTERISTIC_UUID_TX);
+                Log.e("characteristic_TXX", "characteristic_TXX: "+ characteristic_TXX );
+                Log.e("characteristic_TX", "characteristic_TX: "+ characteristic_TX );
+//
+//                if (characteristic_TX != null) {
+//                    // 設置通知
+//                    mBluetoothLeService.setCharacteristicNotification(characteristic_TX, true);
+//                    Log.e("setCharacteristicNotification", "characteristic_TX");
+//                } else {
+//                    Log.e("ERROR", "無法找到指定的特徵_TX");
+//                }
+//                if (characteristic_TXX != null) {
+//                    // 設置通知
+//                    mBluetoothLeService.setCharacteristicNotification(characteristic_TXX, true);
+//                    Log.e("setCharacteristicNotification", "characteristic_TXX");
+//                } else {
+//                    Log.e("ERROR", "無法找到指定的特徵_TXX");
+//                }
+                if (characteristic_TXX != null) {
                     mBluetoothLeService.setCharacteristicNotification(characteristic_TXX, true);
-                    Log.e("setCharacteristicNotification", "characteristic_TXX");
-                    BluetoothGattDescriptor descriptor = characteristic_TXX.getDescriptor(CLIENT_CHARACTERISTIC_CONFIG_DESCRIPTOR_UUID);
-                    descriptor.setValue(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE);
-                    mBluetoothLeService.writeDescriptor(descriptor);
+                    BluetoothGattDescriptor descriptor_TXX = characteristic_TXX.getDescriptor(CLIENT_CHARACTERISTIC_CONFIG_DESCRIPTOR_UUID);
+                    descriptor_TXX.setValue(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE);
+                    mBluetoothLeService.writeDescriptor(descriptor_TXX);
                 } else {
                     Log.e("ERROR", "無法找到指定的特徵_TXX");
+                }
+
+// Add a small delay between setting notifications and descriptors for each characteristic.
+                try {
+                    Thread.sleep(200);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                Log.e("BREAK", "200MILLIS");
+                if (characteristic_TX != null) {
+                    mBluetoothLeService.setCharacteristicNotification(characteristic_TX, true);
+                    BluetoothGattDescriptor descriptor_TX = characteristic_TX.getDescriptor(CLIENT_CHARACTERISTIC_CONFIG_DESCRIPTOR_UUID);
+                    descriptor_TX.setValue(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE);
+                    mBluetoothLeService.writeDescriptor(descriptor_TX);
+                } else {
+                    Log.e("ERROR", "無法找到指定的特徵_TX");
                 }
             }
         }
@@ -77,10 +100,10 @@ public class Training extends AppCompatActivity {
         }
     };
 
-    private final BroadcastReceiver mGattUpdateReceiver = new BroadcastReceiver() {
+    private BroadcastReceiver mGattUpdateReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            final String action = intent.getAction();
+            String action = intent.getAction();
             Log.d("onReceive()", "Action: " + action);
             Log.d("onReceive()", "UUID: " + intent.getStringExtra(BluetoothLeService.EXTRA_UUID));
             Log.d("onReceive()", "Data: " + Arrays.toString(intent.getByteArrayExtra(BluetoothLeService.EXTRA_DATA)));
@@ -104,11 +127,20 @@ public class Training extends AppCompatActivity {
     private void updateReceivedData(String data, String uuid) {
         if (CHARACTERISTIC_UUID_TX.toString().equals(uuid)) {
             ReceivedData_TX = data;
+            if(ReceivedData_TX.length()>5){
+                newTX = ReceivedData_TX.substring(0,ReceivedData_TX.length()-3)+ "\n請開始收縮";
+            }
+            else {
+                newTX = ReceivedData_TX;
+            }
+            Log.e("Received TX", data);
+            Log.e("newTX TX", newTX);
         }
         else if (CHARACTERISTIC_UUID_TXX.toString().equals(uuid)) {
             ReceivedData_TXX = data;
+            Log.e("Received TXX", data);
         }
-        final String allData = ReceivedData_TX + "\n" + ReceivedData_TXX;
+        final String allData = newTX + "\n" + ReceivedData_TXX;
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -140,34 +172,30 @@ public class Training extends AppCompatActivity {
         leave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(Training.this,MainActivity.class);
+                Intent intent = new Intent(Training.this, MainActivity.class);
                 startActivity(intent);
+                if (mBluetoothLeService != null && mBluetoothLeService.isConnected()) {
+                    Log.e("Y", "onClick: 1");
+                    BluetoothGatt gatt = mBluetoothLeService.getBluetoothGatt();
+                    Log.e("Y", "onClick: 2");
+                    if (gatt != null && gatt.getService(SERVICE_UUID) != null) {
+                        BluetoothGattCharacteristic characteristic_RX = mBluetoothLeService.getCharacteristic(SERVICE_UUID, CHARACTERISTIC_UUID_RX);
+                        Log.e("Y", "onClick: 3");
+                        //mBluetoothLeService.AC
+                        // 在這裡執行操作
+                        if (characteristic_RX != null) {
+                            characteristic_RX.setValue("S");
+                            gatt.writeCharacteristic(characteristic_RX);
+                        } else {
+                            Log.e("ERROR", "無法找到指定的特徵");
+                        }
+                    } else {
+                        Log.e("ERROR", "解決");
+                    }
+                } else {
+                    Log.e("ERROR", "BluetoothLeService尚未初始化或未連接到遠程裝置");
+                }
             }
         });
     }
 }
-
-//        if (1 <= connect) {
-//            if (mBluetoothLeService != null && mBluetoothLeService.isConnected()) {
-//                BluetoothGatt gatt = mBluetoothLeService.getBluetoothGatt();
-//                if (gatt != null && gatt.getService(SERVICE_UUID) != null) {
-//                    BluetoothGattCharacteristic characteristic1 = mBluetoothLeService.getCharacteristic(SERVICE_UUID, CHARACTERISTIC_UUID_TX);
-//                    BluetoothGattCharacteristic characteristic2 = mBluetoothLeService.getCharacteristic(SERVICE_UUID, CHARACTERISTIC_UUID_TXX);
-//
-//                    if (characteristic1 != null && characteristic2 != null) {
-//                        mBluetoothLeService.readCharacteristic(characteristic1);
-//                        mBluetoothLeService.readCharacteristic(characteristic2);
-//                    } else {
-//                        Log.e("ERROR", "無法找到指定的特徵");
-//                    }
-//                } else {
-//                    Log.e("ERROR", "解決");
-//                    hint.setText("請聽儀器的指令\n開始訓練");
-//                }
-//            } else {
-//                    Log.e("ERROR", "BluetoothLeService尚未初始化或未連接到遠程裝置");
-//                    hint.setText("請聽儀器的指令\n開始訓練");
-//                }
-//        }else {
-//            hint.setText("請聽儀器的指令\n開始訓練");
-//        }

@@ -88,16 +88,18 @@ public class Config extends AppCompatActivity{
             } else if (BluetoothLeService.ACTION_DATA_AVAILABLE.equals(action)) {
                 Log.d("TESTING", "接收到藍芽資訊");
                 byte[] getByteData = intent.getByteArrayExtra(BluetoothLeService.EXTRA_DATA);
-                StringBuilder stringBuilder = new StringBuilder(getByteData.length);
-                for (byte byteChar : getByteData)
-                    stringBuilder.append(String.format("%02X ", byteChar));
-                String stringData = new String(getByteData);
-                Log.d("TESTING", "String: " + stringData + "\n"
-                        + "byte[]: " + BluetoothLeService.byteArrayToHexStr(getByteData));
+                if(getByteData!=null){
+                    StringBuilder stringBuilder = new StringBuilder(getByteData.length);
+                    for (byte byteChar : getByteData)
+                        stringBuilder.append(String.format("%02X ", byteChar));
+                    String stringData = new String(getByteData);
+                    Log.d("TESTING", "String: " + stringData + "\n"
+                            + "byte[]: " + BluetoothLeService.byteArrayToHexStr(getByteData));
 
-                // 在此處將接收到的資料添加到 dataList
-                dataList.add(0, stringData);
-                adapter.notifyDataSetChanged();
+                    // 在此處將接收到的資料添加到 dataList
+                    dataList.add(0, stringData);
+                    adapter.notifyDataSetChanged();
+                }
             }
         }
     };
@@ -162,8 +164,8 @@ public class Config extends AppCompatActivity{
                         BluetoothGattCharacteristic characteristic_RX = mBluetoothLeService.getCharacteristic(SERVICE_UUID, CHARACTERISTIC_UUID_RX);
                         Log.e("Y", "onClick: 3" );
                         //mBluetoothLeService.AC
+                        // 在這裡執行操作
                         if (characteristic_RX != null) {
-                            // 在這裡執行操作
                             characteristic_RX.setValue("S");
                             gatt.writeCharacteristic(characteristic_RX);
                         } else {
@@ -238,49 +240,11 @@ public class Config extends AppCompatActivity{
         }
     }
 
-
-
     private void setupListView() {
         ListView listView = findViewById(R.id.datd_list);
         dataList = new ArrayList<>();
         adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, dataList);
         listView.setAdapter(adapter);
     }
-        // 創建一個模擬數據源，從最新的一筆開始顯示至第十筆資料
 
-//        for(int i = 10; i > 0; i--) {
-//            dataList.add("數據 " + i);
-//        }
-//        adapter.notifyDataSetChanged();
-//
-//        // 模擬持續接收數據的情況
-//        new Thread(new Runnable() {
-//            @Override
-//            public void run() {
-//                int count = 11;
-//                while (true) {
-//                    try {
-//                        Thread.sleep(1000); // 模擬1秒接收一筆數據
-//                    } catch (InterruptedException e) {
-//                        e.printStackTrace();
-//                    }
-//                    final String data = "數據 " + count++;
-//                    runOnUiThread(new Runnable() {
-//                        @Override
-//                        public void run() {
-//                            dataList.add(0, data);
-//                            adapter.notifyDataSetChanged();
-//                        }
-//                    });
-//                }
-//            }
-//        }).start();
-//    private BluetoothLeService.Callback mCallback = new BleService.Callback() {
-//        @Override
-//        public void onCharacteristicChanged(BluetoothGattCharacteristic characteristic) {
-//            // 當有數據更新時，BleService會調用該方法向C頁面發送數據
-//            byte[] data = characteristic.getValue();
-//            // TODO: 對接收到的數據進行處理
-//        }
-//    };
 }

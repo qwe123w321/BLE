@@ -33,7 +33,7 @@
             android:layout_gravity="center_horizontal"
             android:textColor="#0000FF"
             android:gravity="center"
-            android:textSize="40dp"
+            android:textSize="50dp"
             android:text="請聽儀器的指令\n開始訓練" />
     </LinearLayout>
 
