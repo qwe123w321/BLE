@@ -8,6 +8,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -16,20 +17,22 @@ import android.widget.TextView;
 
 import com.example.pelvicfloormuscletraining.R;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class Questionnaire extends AppCompatActivity {
+public class Questionnaire extends AppCompatActivity implements Serializable{
     private SharedPreferences sharedPreferences;
     private List<Question> questions;
     private int currentQuestionIndex;
     private Button previousButton;
     private Button nextButton;
+    private ImageButton leave;
     private TextView questionText;
     private RadioGroup optionGroup;
 
-    class Question {
+    public static class Question implements Serializable {
         String questionText;
         List<String> options;
 
@@ -55,7 +58,7 @@ public class Questionnaire extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_questionnaire);
-
+        leave = (ImageButton)findViewById(R.id.leave6);
         previousButton = (Button) findViewById(R.id.previous_button);
         nextButton = findViewById(R.id.next_button);
         questionText = findViewById(R.id.question_text);
@@ -83,14 +86,26 @@ public class Questionnaire extends AppCompatActivity {
                     updateUI();
                 } else {
                     // 跳转到答案预览页面
+//                    Intent intent = new Intent(Questionnaire.this, PreviewActivity.class);
+//                    intent.putExtra("questions", new ArrayList<>(questions));
+//                    startActivity(intent);
                     Intent intent = new Intent(Questionnaire.this, PreviewActivity.class);
-                    intent.putExtra("questions", new ArrayList<>(questions));
+                    intent.putExtra("questions", (Serializable) questions);
                     startActivity(intent);
                 }
             }
         });
+        leave.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Questionnaire.this,MainActivity.class);
+                startActivity(intent);
+            }
+        });
     }
-
+    public List<Question> getQuestions() {
+        return questions;
+    }
     private void updateUI() {
         Question currentQuestion = questions.get(currentQuestionIndex);
         questionText.setText(currentQuestion.questionText);
@@ -108,10 +123,12 @@ public class Questionnaire extends AppCompatActivity {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
                 RadioButton checkedRadioButton = findViewById(checkedId);
-                String selectedAnswer = checkedRadioButton.getText().toString();
-                SharedPreferences.Editor editor = sharedPreferences.edit();
-                editor.putString("question_" + currentQuestionIndex, selectedAnswer);
-                editor.apply();
+                if (checkedRadioButton != null) {
+                    String selectedAnswer = checkedRadioButton.getText().toString();
+                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                    editor.putString("question_" + currentQuestionIndex, selectedAnswer);
+                    editor.apply();
+                }
             }
         });
 

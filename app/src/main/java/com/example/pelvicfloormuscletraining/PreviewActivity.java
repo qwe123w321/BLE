@@ -22,7 +22,8 @@ public class PreviewActivity extends AppCompatActivity {
         sharedPreferences = getSharedPreferences("answers", Context.MODE_PRIVATE);
 
         // 獲取問題列表
-        questions = ((Questionnaire) getApplicationContext()).getQuestions();
+        //questions = ((Questionnaire) getApplicationContext()).getQuestions();
+        questions = (List<Questionnaire.Question>) getIntent().getSerializableExtra("questions");
 
         for (int i = 0; i < questions.size(); i++) {
             String answer = sharedPreferences.getString("question_" + i, null);

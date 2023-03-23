@@ -101,6 +101,7 @@ public class MainActivity extends AppCompatActivity {
 
     private ImageButton training;
     private ImageButton config;
+    private ImageButton questionnaire;
     private String mPassword = "cif306"; // 正確的密碼
     private EditText mEditText;
     private TextView date;
@@ -276,6 +277,7 @@ public class MainActivity extends AppCompatActivity {
         first_check = (ImageView)findViewById(R.id.first_check);
         second_check = (ImageView)findViewById(R.id.second_check);
         third_check = (ImageView)findViewById(R.id.third_check);
+        questionnaire = (ImageButton)findViewById(R.id.questionnaire);
         //權限許可
         Log.e("onCreate", "onCreate:");
         checkPermission();
@@ -333,6 +335,13 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Log.e("TAG", "1: ");
                 showPasswordDialog();
+            }
+        });
+        questionnaire.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, Questionnaire.class);
+                startActivity(intent);
             }
         });
         if (mBluetoothLeService != null && mBluetoothLeService.isConnected()) {
