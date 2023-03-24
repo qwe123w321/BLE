@@ -91,7 +91,14 @@ public class PreviewActivity extends AppCompatActivity {
                 } else {
                     // 所有問題都已回答，儲存答案
                     Toast.makeText(PreviewActivity.this, "答案已保存", Toast.LENGTH_SHORT).show();
+                    exportAndUploadCSV();
+                    try {
+                        Thread.sleep(500);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                     finish(); // 返回主頁面或其他頁面
+
                 }
             }
         });
@@ -149,7 +156,9 @@ public class PreviewActivity extends AppCompatActivity {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED ||
                 ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE}, REQUEST_PERMISSIONS_CODE);
+            Log.e("exportAndUploadCSV", "permission DENY");
         } else {
+            Log.e("exportAndUploadCSV", "permission allowed");
             Map<String, String> answersMap = loadAnswersFromSharedPreferences();
             File csvFile = createCSVFile(answersMap);
             Log.d("CSV File Path", csvFile.getAbsolutePath());
@@ -179,7 +188,7 @@ public class PreviewActivity extends AppCompatActivity {
 
             // 在應用的內部存儲區域創建文件
             csvFile = new File(getFilesDir(), fileName);
-
+            Log.e("Dir", csvFile.getAbsolutePath());
             // 將數據寫入CSV文件
             FileWriter fileWriter = new FileWriter(csvFile);
             CSVWriter csvWriter = new CSVWriter(fileWriter);
@@ -202,7 +211,7 @@ public class PreviewActivity extends AppCompatActivity {
 
         RequestBody requestBody = new MultipartBody.Builder()
                 .setType(MultipartBody.FORM)
-                .addFormDataPart("uploaded_file", file.getName(),
+                .addFormDataPart("uploaded_file[]", file.getName(),
                         RequestBody.create(MediaType.parse("text/csv"), file))
                 .build();
 
