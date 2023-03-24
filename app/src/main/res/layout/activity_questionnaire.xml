@@ -24,7 +24,7 @@
         android:id="@+id/linearLayout3"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="100dp"
+        android:layout_marginTop="80dp"
         android:orientation="vertical"
         app:layout_constraintTop_toBottomOf="@+id/leave6"
         tools:context=".SurveyActivity">
@@ -32,12 +32,12 @@
         <TextView
             android:id="@+id/question_text"
             android:layout_width="match_parent"
-            android:layout_height="100dp"
+            android:layout_height="180dp"
             android:layout_gravity="center"
             android:padding="16dp"
             android:text="問題描述"
             android:textAlignment="center"
-            android:textSize="40dp" />
+            android:textSize="35dp" />
 
         <ScrollView
             android:layout_width="match_parent"
@@ -58,27 +58,27 @@
         </ScrollView>
 
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="375dp"
             android:layout_height="120dp"
-            android:orientation="horizontal"
-            android:layout_gravity="center">
+            android:layout_gravity="center"
+            android:orientation="horizontal">
 
             <Button
                 android:id="@+id/previous_button"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="80dp"
                 android:layout_weight="1"
                 android:text="上一題"
-                android:textSize="40dp" />
+                android:textSize="30dp" />
 
             <Button
                 android:id="@+id/next_button"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="80dp"
+                android:layout_marginLeft="30dp"
                 android:layout_weight="1"
                 android:text="下一題"
-                android:textSize="40dp"
-                android:layout_marginLeft="30dp"/>
+                android:textSize="30dp" />
 
         </LinearLayout>
 
