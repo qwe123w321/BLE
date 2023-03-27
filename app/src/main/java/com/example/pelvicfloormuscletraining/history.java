@@ -37,6 +37,7 @@ public class history extends AppCompatActivity {
         setContentView(R.layout.activity_history);
 
         gridView = findViewById(R.id.grid_view);
+        updateGridContent(1);
         clickCount = getIntent().getIntExtra("clickCount", 0);
         daysPassed = (int) TimeUnit.MILLISECONDS.toDays(System.currentTimeMillis() - getInstallTime());
         M1 = (ImageButton)findViewById(R.id.btn_month1);
@@ -45,6 +46,15 @@ public class history extends AppCompatActivity {
         M4 = (ImageButton)findViewById(R.id.btn_month4);
         M5 = (ImageButton)findViewById(R.id.btn_month5);
         M6 = (ImageButton)findViewById(R.id.btn_month6);
+
+        View.OnClickListener monthButtonClickListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int selectedMonth = Integer.parseInt(v.getTag().toString());
+                updateGridContent(selectedMonth);
+            }
+        };
+
         M1.setOnClickListener(monthButtonClickListener);
         M2.setOnClickListener(monthButtonClickListener);
         M3.setOnClickListener(monthButtonClickListener);
@@ -65,12 +75,7 @@ public class history extends AppCompatActivity {
     }
 
     private void updateGridContent(int selectedMonth) {
-        gridView.removeAllViews();
-        gridView = findViewById(R.id.grid_view);
-        gridView.setAdapter(new GridAdapter(this, daysPassed));
-        // int selectedMonth 使用 selectedMonth 來確定要顯示的數據
-        int dayOfMonth = (daysPassed % 30) + 1;
-        int month = daysPassed / 30;
+        gridView.setAdapter(new GridAdapter(this, daysPassed,selectedMonth));
     }
 
 
@@ -85,23 +90,18 @@ public class history extends AppCompatActivity {
         }
     }
 
-    private View.OnClickListener monthButtonClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            int selectedMonth = Integer.parseInt(((ImageButton) v).getTag().toString());
-            //updateGridContentForMonth(selectedMonth);
-            updateGridContent(selectedMonth);
 
-        }
-    };
     public class GridAdapter extends BaseAdapter {
         private Context context;
         private int daysPassed;
+        private int selectedMonth;
 
-        public GridAdapter(Context context, int daysPassed) {
+        public GridAdapter(Context context, int daysPassed, int selectedMonth) {
             this.context = context;
             this.daysPassed = daysPassed;
+            this.selectedMonth = selectedMonth;
         }
+
 
         @Override
         public int getCount() {
@@ -127,10 +127,10 @@ public class history extends AppCompatActivity {
                 cell = (CellView) convertView;
             }
 
-            int dayOfMonth = (daysPassed % 30) + 1;
+            int dayOfMonth = ((daysPassed - 1) % 30) + 1;
             int month = daysPassed / 30;
 
-            if (position < dayOfMonth) {
+            if (position < dayOfMonth && month == selectedMonth - 1) {
                 cell.setDayOfMonth(position + 1);
 
                 if (position == dayOfMonth - 1) {
@@ -146,11 +146,16 @@ public class history extends AppCompatActivity {
                 } else if (clickCount == 3 && position == 0 && month == 2) {
                     cell.setShowStar(true);
                     cell.setStarColor(Color.RED);
+                } else {
+                    cell.setShowStar(false);
                 }
+            } else {
+                cell.setDayOfMonth(0);
+                cell.setShowStar(false);
+                cell.setBackgroundColor(Color.TRANSPARENT);
             }
 
             return cell;
         }
     }
-
 }
