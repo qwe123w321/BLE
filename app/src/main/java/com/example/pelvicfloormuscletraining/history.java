@@ -59,7 +59,7 @@ public class history extends AppCompatActivity {
         //generateGrid();
 
         // 更新格子內容
-        //updateGridContent(1);
+        updateGridContent(0);
     }
 
 //    private void generateGrid() {
