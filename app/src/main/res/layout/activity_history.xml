@@ -51,7 +51,6 @@
                 android:onClick="mon"
                 android:scaleType="fitCenter"
                 android:tag="1"
-                android:src="@drawable/ic_baseline_filter_1_24"
                 app:srcCompat="@drawable/one1circle3x" />
 
             <ImageButton
@@ -62,7 +61,6 @@
                 android:layout_weight="3"
                 android:scaleType="fitCenter"
                 android:tag="2"
-                android:src="@drawable/ic_baseline_filter_2_24"
                 app:srcCompat="@drawable/two2circle3x" />
 
             <ImageButton
@@ -73,7 +71,6 @@
                 android:layout_weight="3"
                 android:scaleType="fitCenter"
                 android:tag="3"
-                android:src="@drawable/ic_baseline_filter_3_24"
                 app:srcCompat="@drawable/three3circle3x" />
 
             <ImageButton
@@ -84,7 +81,6 @@
                 android:layout_weight="3"
                 android:scaleType="fitCenter"
                 android:tag="4"
-                android:src="@drawable/ic_baseline_filter_4_24"
                 app:srcCompat="@drawable/four4circle3x" />
 
             <ImageButton
@@ -95,7 +91,6 @@
                 android:layout_weight="3"
                 android:scaleType="fitCenter"
                 android:tag="5"
-                android:src="@drawable/ic_baseline_filter_5_24"
                 app:srcCompat="@drawable/five5circle3x" />
 
             <ImageButton
@@ -107,7 +102,6 @@
                 android:onClick="mon"
                 android:scaleType="fitCenter"
                 android:tag="6"
-                android:src="@drawable/ic_baseline_filter_6_24"
                 app:srcCompat="@drawable/six6circle3x" />
         </LinearLayout>
     </LinearLayout>
