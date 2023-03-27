@@ -37,15 +37,18 @@ public class history extends AppCompatActivity {
         setContentView(R.layout.activity_history);
 
         gridView = findViewById(R.id.grid_view);
-        updateGridContent(1);
         clickCount = getIntent().getIntExtra("clickCount", 0);
         daysPassed = (int) TimeUnit.MILLISECONDS.toDays(System.currentTimeMillis() - getInstallTime());
+
         M1 = (ImageButton)findViewById(R.id.btn_month1);
         M2 = (ImageButton)findViewById(R.id.btn_month2);
         M3 = (ImageButton)findViewById(R.id.btn_month3);
         M4 = (ImageButton)findViewById(R.id.btn_month4);
         M5 = (ImageButton)findViewById(R.id.btn_month5);
         M6 = (ImageButton)findViewById(R.id.btn_month6);
+
+        GridAdapter gridAdapter = new GridAdapter(this, daysPassed,1);
+        gridView.setAdapter(gridAdapter);
 
         View.OnClickListener monthButtonClickListener = new View.OnClickListener() {
             @Override
@@ -105,7 +108,7 @@ public class history extends AppCompatActivity {
 
         @Override
         public int getCount() {
-            return 6 * 5;
+            return 5 * 6;
         }
 
         @Override
@@ -127,10 +130,10 @@ public class history extends AppCompatActivity {
                 cell = (CellView) convertView;
             }
 
-            int dayOfMonth = ((daysPassed - 1) % 30) + 1;
+            int dayOfMonth = (daysPassed % 30) + 1;
             int month = daysPassed / 30;
 
-            if (position < dayOfMonth && month == selectedMonth - 1) {
+            if (position < dayOfMonth) {
                 cell.setDayOfMonth(position + 1);
 
                 if (position == dayOfMonth - 1) {
@@ -146,13 +149,7 @@ public class history extends AppCompatActivity {
                 } else if (clickCount == 3 && position == 0 && month == 2) {
                     cell.setShowStar(true);
                     cell.setStarColor(Color.RED);
-                } else {
-                    cell.setShowStar(false);
                 }
-            } else {
-                cell.setDayOfMonth(0);
-                cell.setShowStar(false);
-                cell.setBackgroundColor(Color.TRANSPARENT);
             }
 
             return cell;
