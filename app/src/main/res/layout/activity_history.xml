@@ -6,22 +6,42 @@
     android:layout_height="match_parent"
     tools:context=".history">
 
+    <ImageButton
+        android:id="@+id/leave8"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_marginStart="322dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_weight="0"
+        android:background="#00000000"
+        android:scaleType="fitCenter"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/leave" />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_marginTop="100dp"
+        android:orientation="vertical"
+        app:layout_constraintTop_toBottomOf="@+id/leave8">
 
         <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="650dp"
+            android:layout_height="490dp"
             android:layout_weight="0">
 
-            <LinearLayout
-                android:id="@+id/grid_container"
+            <GridView
+                android:id="@+id/grid_view"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                 />
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:horizontalSpacing="4dp"
+                android:numColumns="5"
+                android:stretchMode="columnWidth"
+                android:verticalSpacing="4dp" />
         </ScrollView>
 
         <LinearLayout
@@ -36,52 +56,60 @@
                 android:layout_height="60dp"
                 android:layout_gravity="center"
                 android:layout_weight="3"
+                android:onClick="mon"
                 android:scaleType="fitCenter"
+                android:tag="1"
                 app:srcCompat="@drawable/one1circle3x" />
 
             <ImageButton
                 android:id="@+id/btn_month2"
                 android:layout_width="60dp"
                 android:layout_height="60dp"
-                android:layout_weight="3"
                 android:layout_gravity="center"
+                android:layout_weight="3"
                 android:scaleType="fitCenter"
+                android:tag="2"
                 app:srcCompat="@drawable/two2circle3x" />
 
             <ImageButton
                 android:id="@+id/btn_month3"
                 android:layout_width="60dp"
                 android:layout_height="60dp"
-                android:layout_weight="3"
                 android:layout_gravity="center"
+                android:layout_weight="3"
                 android:scaleType="fitCenter"
+                android:tag="3"
                 app:srcCompat="@drawable/three3circle3x" />
 
             <ImageButton
                 android:id="@+id/btn_month4"
                 android:layout_width="60dp"
                 android:layout_height="60dp"
-                android:layout_weight="3"
                 android:layout_gravity="center"
+                android:layout_weight="3"
                 android:scaleType="fitCenter"
+                android:tag="4"
                 app:srcCompat="@drawable/four4circle3x" />
 
             <ImageButton
                 android:id="@+id/btn_month5"
                 android:layout_width="60dp"
                 android:layout_height="60dp"
-                android:layout_weight="3"
                 android:layout_gravity="center"
+                android:layout_weight="3"
                 android:scaleType="fitCenter"
+                android:tag="5"
                 app:srcCompat="@drawable/five5circle3x" />
 
             <ImageButton
                 android:id="@+id/btn_month6"
                 android:layout_width="60dp"
                 android:layout_height="60dp"
-                android:layout_weight="3"
                 android:layout_gravity="center"
+                android:layout_weight="3"
+                android:onClick="mon"
                 android:scaleType="fitCenter"
+                android:tag="6"
                 app:srcCompat="@drawable/six6circle3x" />
         </LinearLayout>
     </LinearLayout>
