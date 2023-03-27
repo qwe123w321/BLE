@@ -7,6 +7,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -47,7 +48,7 @@ public class history extends AppCompatActivity {
         M5 = (ImageButton)findViewById(R.id.btn_month5);
         M6 = (ImageButton)findViewById(R.id.btn_month6);
 
-        GridAdapter gridAdapter = new GridAdapter(this, daysPassed,1);
+        GridAdapter gridAdapter = new GridAdapter(this, daysPassed,0);
         gridView.setAdapter(gridAdapter);
 
         View.OnClickListener monthButtonClickListener = new View.OnClickListener() {
@@ -55,6 +56,7 @@ public class history extends AppCompatActivity {
             public void onClick(View v) {
                 int selectedMonth = Integer.parseInt(v.getTag().toString());
                 updateGridContent(selectedMonth);
+                Log.e("TAG", "onClick: ");
             }
         };
 
@@ -133,25 +135,34 @@ public class history extends AppCompatActivity {
             int dayOfMonth = (daysPassed % 30) + 1;
             int month = daysPassed / 30;
 
-            if (position < dayOfMonth) {
-                cell.setDayOfMonth(position + 1);
+            // 为每个单元格分配一个视图
+            //cell.setDayOfMonth(position + 1);
 
-                if (position == dayOfMonth - 1) {
-                    cell.setBackgroundResource(R.drawable.cell_today_background);
+            if (selectedMonth == month) {
+                if (position < dayOfMonth) {
+                    cell.setDayOfMonth(position + 1);
+
+                    if (position == dayOfMonth - 1) {
+                        cell.setBackgroundResource(R.drawable.cell_today_background);
+                    }
+
+                    if (clickCount == 1 && position == 0) {
+                        cell.setShowStar(true);
+                        cell.setStarColor(Color.BLUE);
+                    } else if (clickCount == 2 && position == 1) {
+                        cell.setShowStar(true);
+                        cell.setStarColor(Color.YELLOW);
+                    } else if (clickCount == 3 && position == 0 && month == 2) {
+                        cell.setShowStar(true);
+                        cell.setStarColor(Color.RED);
+                    }
                 }
-
-                if (clickCount == 1 && position == 0) {
-                    cell.setShowStar(true);
-                    cell.setStarColor(Color.BLUE);
-                } else if (clickCount == 2 && position == 1) {
-                    cell.setShowStar(true);
-                    cell.setStarColor(Color.YELLOW);
-                } else if (clickCount == 3 && position == 0 && month == 2) {
-                    cell.setShowStar(true);
-                    cell.setStarColor(Color.RED);
+            } else {
+                int totalDaysInMonth = 30;
+                if (position < totalDaysInMonth) {
+                    cell.setDayOfMonth(position + 1);
                 }
             }
-
             return cell;
         }
     }

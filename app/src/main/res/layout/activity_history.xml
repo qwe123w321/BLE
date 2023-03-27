@@ -31,11 +31,12 @@
         <GridView
             android:id="@+id/grid_view"
             android:layout_width="match_parent"
-            android:layout_height="520dp"
+            android:layout_height="500dp"
+            android:layout_weight="1"
             android:horizontalSpacing="8dp"
             android:numColumns="5"
-            android:verticalSpacing="8dp"
-            android:stretchMode="columnWidth"/>
+            android:stretchMode="columnWidth"
+            android:verticalSpacing="8dp" />
 
         <LinearLayout
             android:layout_width="match_parent"
