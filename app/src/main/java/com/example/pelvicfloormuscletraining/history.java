@@ -25,12 +25,7 @@ public class history extends AppCompatActivity {
     private GridView gridView;
     private int clickCount;
     private int daysPassed;
-    private ImageButton M1;
-    private ImageButton M2;
-    private ImageButton M3;
-    private ImageButton M4;
-    private ImageButton M5;
-    private ImageButton M6;
+    private ImageButton M1,M2,M3,M4,M5,M6;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,14 +43,16 @@ public class history extends AppCompatActivity {
         M5 = (ImageButton)findViewById(R.id.btn_month5);
         M6 = (ImageButton)findViewById(R.id.btn_month6);
 
-        GridAdapter gridAdapter = new GridAdapter(this, daysPassed,0);
+//        GridAdapter gridAdapter = new GridAdapter(this, daysPassed,0);
+//        gridView.setAdapter(gridAdapter);
+        GridAdapter gridAdapter = new GridAdapter(this);
         gridView.setAdapter(gridAdapter);
 
         View.OnClickListener monthButtonClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 int selectedMonth = Integer.parseInt(v.getTag().toString());
-                updateGridContent(selectedMonth);
+                //updateGridContent(selectedMonth);
                 Log.e("TAG", "onClick: ");
             }
         };
@@ -69,22 +66,6 @@ public class history extends AppCompatActivity {
 
     }
 
-    private View createCell() {
-        View cell = new View(this);
-        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(0, 100);
-        layoutParams.weight = 1;
-        layoutParams.setMargins(5, 5, 5, 5);
-        cell.setLayoutParams(layoutParams);
-        cell.setBackgroundResource(R.drawable.cell_background);
-        return cell;
-    }
-
-    private void updateGridContent(int selectedMonth) {
-        gridView.setAdapter(new GridAdapter(this, daysPassed,selectedMonth));
-    }
-
-
-
     private long getInstallTime() {
         try {
             PackageInfo packageInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
@@ -94,76 +75,134 @@ public class history extends AppCompatActivity {
             return System.currentTimeMillis();
         }
     }
-
-
     public class GridAdapter extends BaseAdapter {
         private Context context;
-        private int daysPassed;
-        private int selectedMonth;
+        private int[] daysOfMonth = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31 };
+        private boolean[] showStars = { true, false, true, false, true, false, true, false, true, false, true, false, true, false, true, false, true, false, true, false, true, false, true, false, true, false, true, false, true, false, true };
+        private int[] starColors = { Color.BLUE, Color.RED, Color.GREEN, Color.YELLOW, Color.MAGENTA, Color.CYAN, Color.DKGRAY, Color.GRAY, Color.LTGRAY, Color.BLACK };
 
-        public GridAdapter(Context context, int daysPassed, int selectedMonth) {
+
+        public GridAdapter(Context context) {
             this.context = context;
-            this.daysPassed = daysPassed;
-            this.selectedMonth = selectedMonth;
         }
-
 
         @Override
         public int getCount() {
-            return 5 * 6;
+            return daysOfMonth.length;
         }
 
         @Override
         public Object getItem(int position) {
-            return null;
+            return daysOfMonth[position];
         }
 
         @Override
         public long getItemId(int position) {
-            return 0;
+            return position;
         }
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
             CellView cell;
+
             if (convertView == null) {
                 cell = new CellView(context);
             } else {
                 cell = (CellView) convertView;
             }
+            int cellSize = (parent.getWidth() - (6 * (5 - 1))) / 5; // 计算单元格大小，减去间距
+            GridView.LayoutParams layoutParams = new GridView.LayoutParams(cellSize, cellSize);
+            cell.setLayoutParams(layoutParams);
+            cell.setDayOfMonth(daysOfMonth[position]);
+            cell.setShowStar(showStars[position % showStars.length]);
+            cell.setStarColor(starColors[position % starColors.length]);
 
-            int dayOfMonth = (daysPassed % 30) + 1;
-            int month = daysPassed / 30;
-
-            // 为每个单元格分配一个视图
-            //cell.setDayOfMonth(position + 1);
-
-            if (selectedMonth == month) {
-                if (position < dayOfMonth) {
-                    cell.setDayOfMonth(position + 1);
-
-                    if (position == dayOfMonth - 1) {
-                        cell.setBackgroundResource(R.drawable.cell_today_background);
-                    }
-
-                    if (clickCount == 1 && position == 0) {
-                        cell.setShowStar(true);
-                        cell.setStarColor(Color.BLUE);
-                    } else if (clickCount == 2 && position == 1) {
-                        cell.setShowStar(true);
-                        cell.setStarColor(Color.YELLOW);
-                    } else if (clickCount == 3 && position == 0 && month == 2) {
-                        cell.setShowStar(true);
-                        cell.setStarColor(Color.RED);
-                    }
-                }
-            } else {
-                int totalDaysInMonth = 30;
-                if (position < totalDaysInMonth) {
-                    cell.setDayOfMonth(position + 1);
-                }
-            }
             return cell;
         }
     }
+//    private View createCell() {
+//        View cell = new View(this);
+//        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(0, 100);
+//        layoutParams.weight = 1;
+//        layoutParams.setMargins(5, 5, 5, 5);
+//        cell.setLayoutParams(layoutParams);
+//        cell.setBackgroundResource(R.drawable.cell_background);
+//        return cell;
+//    }
+
+//    private void updateGridContent(int selectedMonth) {
+//        gridView.setAdapter(new GridAdapter(this, daysPassed,selectedMonth));
+//    }
+
+//    public class GridAdapter extends BaseAdapter {
+//        private Context context;
+//        private int daysPassed;
+//        private int selectedMonth;
+//
+//        public GridAdapter(Context context, int daysPassed, int selectedMonth) {
+//            this.context = context;
+//            this.daysPassed = daysPassed;
+//            this.selectedMonth = selectedMonth;
+//        }
+//
+//
+//        @Override
+//        public int getCount() {
+//            return 5 * 6;
+//        }
+//
+//        @Override
+//        public Object getItem(int position) {
+//            return null;
+//        }
+//
+//        @Override
+//        public long getItemId(int position) {
+//            return 0;
+//        }
+//
+//        @Override
+//        public View getView(int position, View convertView, ViewGroup parent) {
+//            CellView cell;
+//
+//            if (convertView == null) {
+//                cell = new CellView(context);
+//            } else {
+//                cell = (CellView) convertView;
+//            }
+//
+//            int dayOfMonth = (daysPassed % 30) + 1;
+//            int month = daysPassed / 30;
+//
+//            // 为每个单元格分配一个视图
+//            //cell.setDayOfMonth(position + 1);
+//
+//            if (selectedMonth == month) {
+//                if (position < dayOfMonth) {
+//                    cell.setDayOfMonth(position + 1);
+//
+//                    if (position == dayOfMonth - 1) {
+//                        cell.setBackgroundResource(R.drawable.cell_today_background);
+//                    }
+//
+//                    if (clickCount == 1 && position == 0) {
+//                        cell.setShowStar(true);
+//                        cell.setStarColor(Color.BLUE);
+//                    } else if (clickCount == 2 && position == 1) {
+//                        cell.setShowStar(true);
+//                        cell.setStarColor(Color.YELLOW);
+//                    } else if (clickCount == 3 && position == 0 && month == 2) {
+//                        cell.setShowStar(true);
+//                        cell.setStarColor(Color.RED);
+//                    }
+//                }
+//            } else {
+//                int totalDaysInMonth = 30;
+//                if (position < totalDaysInMonth) {
+//                    cell.setDayOfMonth(position + 1);
+//                }
+//            }
+//            return cell;
+//        }
+//    }
 }

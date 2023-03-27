@@ -9,6 +9,8 @@ import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.GridView;
 
 public class CellView extends View {
     private Drawable background;
@@ -22,6 +24,8 @@ public class CellView extends View {
     public CellView(Context context) {
         super(context);
         init();
+        setBackgroundColor(Color.GRAY);
+        //setLayoutParams(new GridView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
     }
 
     public CellView(Context context, AttributeSet attrs) {
