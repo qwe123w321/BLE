@@ -34,7 +34,8 @@
             android:layout_height="520dp"
             android:horizontalSpacing="8dp"
             android:numColumns="5"
-            android:verticalSpacing="8dp" />
+            android:verticalSpacing="8dp"
+            android:stretchMode="columnWidth"/>
 
         <LinearLayout
             android:layout_width="match_parent"
