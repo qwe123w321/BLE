@@ -6,88 +6,85 @@
     android:layout_height="match_parent"
     tools:context=".history">
 
-    <ScrollView
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@+id/btn_month1"
-        app:layout_constraintTop_toTopOf="parent">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="650dp"
+            android:layout_weight="0">
+
+            <LinearLayout
+                android:id="@+id/grid_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                 />
+        </ScrollView>
 
         <LinearLayout
-            android:id="@+id/grid_container"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="16dp" />
-    </ScrollView>
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:padding="18dp">
 
-    <Button
-        android:id="@+id/btn_month1"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="8dp"
-        android:text="1"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/btn_month2"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent" />
+            <ImageButton
+                android:id="@+id/btn_month1"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:layout_gravity="center"
+                android:layout_weight="3"
+                android:scaleType="fitCenter"
+                app:srcCompat="@drawable/one1circle3x" />
 
-    <Button
-        android:id="@+id/btn_month2"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="8dp"
-        android:text="2"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/btn_month3"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/btn_month1" />
-    <Button
-        android:id="@+id/btn_month3"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="8dp"
-        android:text="3"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/btn_month4"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/btn_month2" />
-    <Button
-        android:id="@+id/btn_month4"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="8dp"
-        android:text="4"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/btn_month5"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/btn_month3" />
-    <Button
-        android:id="@+id/btn_month5"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="8dp"
-        android:text="5"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/btn_month6"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/btn_month4" />
-    <Button
-        android:id="@+id/btn_month6"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="8dp"
-        android:text="6"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/grid_container"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/btn_month5" />
+            <ImageButton
+                android:id="@+id/btn_month2"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:layout_weight="3"
+                android:layout_gravity="center"
+                android:scaleType="fitCenter"
+                app:srcCompat="@drawable/two2circle3x" />
+
+            <ImageButton
+                android:id="@+id/btn_month3"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:layout_weight="3"
+                android:layout_gravity="center"
+                android:scaleType="fitCenter"
+                app:srcCompat="@drawable/three3circle3x" />
+
+            <ImageButton
+                android:id="@+id/btn_month4"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:layout_weight="3"
+                android:layout_gravity="center"
+                android:scaleType="fitCenter"
+                app:srcCompat="@drawable/four4circle3x" />
+
+            <ImageButton
+                android:id="@+id/btn_month5"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:layout_weight="3"
+                android:layout_gravity="center"
+                android:scaleType="fitCenter"
+                app:srcCompat="@drawable/five5circle3x" />
+
+            <ImageButton
+                android:id="@+id/btn_month6"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:layout_weight="3"
+                android:layout_gravity="center"
+                android:scaleType="fitCenter"
+                app:srcCompat="@drawable/six6circle3x" />
+        </LinearLayout>
+    </LinearLayout>
 
     <!-- 添加按鈕3、4、5、6 -->
 </androidx.constraintlayout.widget.ConstraintLayout>

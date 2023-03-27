@@ -37,7 +37,7 @@ public class history extends AppCompatActivity {
         generateGrid();
 
         // 更新格子內容
-        updateGridContent(2);
+        updateGridContent(1);
     }
 
     private void generateGrid() {
@@ -50,7 +50,6 @@ public class history extends AppCompatActivity {
                 View cell = createCell();
                 row.addView(cell);
             }
-
             gridContainer.addView(row);
         }
     }
@@ -66,19 +65,24 @@ public class history extends AppCompatActivity {
     }
 
     private void updateGridContent(int selectedMonth) {
-        // 使用 selectedMonth 來確定要顯示的數據
+        gridContainer.removeAllViews();
+        // int selectedMonth 使用 selectedMonth 來確定要顯示的數據
         int dayOfMonth = (daysPassed % 30) + 1;
         int month = daysPassed / 30;
 
         // 更新格子內容，例如顯示星星和數字
         // 根據需求更新其他 UI 元素，例如自動選擇當前月份的按鈕
         for (int i = 0; i < 6; i++) {
-            LinearLayout row = (LinearLayout) gridContainer.getChildAt(i);
+            //LinearLayout row = (LinearLayout) gridContainer.getChildAt(i);
+            LinearLayout row = new LinearLayout(this);
+            row.setOrientation(LinearLayout.HORIZONTAL);
+            row.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 0, 1));
 
             for (int j = 0; j < 5; j++) {
                 int currentDay = i * 5 + j + 1;
-                CellView cell = (CellView) row.getChildAt(j);
-
+                //CellView cell = (CellView) row.getChildAt(j);
+                CellView cell = new CellView(this);
+                cell.setLayoutParams(new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.MATCH_PARENT, 1));
                 if (currentDay <= dayOfMonth) {
                     cell.setDayOfMonth(currentDay);
 
@@ -97,7 +101,9 @@ public class history extends AppCompatActivity {
                         cell.setStarColor(Color.RED);
                     }
                 }
+                row.addView(cell);
             }
+            gridContainer.addView(row);
         }
     }
 
@@ -117,7 +123,8 @@ public class history extends AppCompatActivity {
         @Override
         public void onClick(View v) {
             int selectedMonth = Integer.parseInt(((Button) v).getText().toString());
-            updateGridContentForMonth(selectedMonth);
+            //updateGridContentForMonth(selectedMonth);
+            updateGridContent(selectedMonth);
         }
     };
 }

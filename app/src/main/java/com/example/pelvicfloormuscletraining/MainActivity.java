@@ -100,6 +100,7 @@ public class MainActivity extends AppCompatActivity {
     private UUID CHARACTERISTIC_UUID_TXXX = UUID.fromString("6e400005-b5a3-f393-e0a9-e50e24dcca9e");
 
     private ImageButton training;
+    private ImageButton history;
     private ImageButton config;
     private ImageButton questionnaire;
     private String mPassword = "cif306"; // 正確的密碼
@@ -271,6 +272,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         training = (ImageButton) findViewById(R.id.train);
+        history = (ImageButton) findViewById(R.id.history);
         config = (ImageButton) findViewById(R.id.config_Button);
         mEditText = new EditText(this);
         date = (TextView)findViewById(R.id.the_date);
@@ -328,6 +330,13 @@ public class MainActivity extends AppCompatActivity {
                 // 將 Bundle 放入 Intent 物件中
                 intent2.putExtras(bundle);
                 startActivity(intent2);
+            }
+        });
+        history.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent1 = new Intent(MainActivity.this,history.class);
+                startActivity(intent1);
             }
         });
         config.setOnClickListener(new View.OnClickListener() {
