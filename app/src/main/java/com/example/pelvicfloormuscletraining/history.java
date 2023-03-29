@@ -42,6 +42,7 @@ public class history extends AppCompatActivity {
     private static final String FIRSTDAY = "firstday";
     private static final String AllRecord = "all_record";
     private long days;
+    private TextView sumofstar;
     private List<ImageButton> monthButtons;
     int[] original_image = {R.drawable.one1circle3x, R.drawable.two2circle3x, R.drawable.three3circle3x, R.drawable.four4circle3x,R.drawable.five5circle3x,R.drawable.six6circle3x};
     int[] clicked_image = {R.drawable.one1circlefill3x, R.drawable.two2circlefill3x, R.drawable.three3circlefill3x, R.drawable.four4circlefill3x,R.drawable.five5circlefill3x,R.drawable.six6circlefill3x};
@@ -54,6 +55,7 @@ public class history extends AppCompatActivity {
         gridView = findViewById(R.id.grid_view);
         clickCount = getIntent().getIntExtra("clickCount", 0);
         daysPassed = (int) TimeUnit.MILLISECONDS.toDays(System.currentTimeMillis() - getInstallTime());
+        sumofstar = (TextView)findViewById(R.id.allstar);
 
         M1 = (ImageButton)findViewById(R.id.btn_month1);
         M2 = (ImageButton)findViewById(R.id.btn_month2);
@@ -80,13 +82,13 @@ public class history extends AppCompatActivity {
             e.printStackTrace();
         }
 
-//        GridAdapter gridAdapter = new GridAdapter(this, daysPassed,0);
-//        gridView.setAdapter(gridAdapter);
-
         GridAdapter gridAdapter = new GridAdapter(this,(int)days/30+1);
         Log.e("TAG", "onCreate: "+(int)days/30+1);
         gridView.setAdapter(gridAdapter);
         monthButtons.get((int)days/30).setImageResource(clicked_image[(int)days/30]);
+
+        sumofstar.setText("已獲得星數：" + Integer.toString(sum_star()));
+
         for (int i = 0; i < monthButtons.size(); i++) {
             ImageButton button = monthButtons.get(i);
             //button.setTag(i); // 設定按鈕的標籤為其在列表中的索引
@@ -119,6 +121,17 @@ public class history extends AppCompatActivity {
                 }
             });
         }
+    }
+
+    private int sum_star(){
+        int sum = 0;
+        for (int i = 1; i <= 180; i++) {
+            int times = sharedPreferences_allrecord.getInt(Integer.toString(i), 0);
+            if (times > 0) {
+                sum++;
+            }
+        }
+        return sum;
     }
 
 
