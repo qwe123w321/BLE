@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.GridView;
 
 public class CellView extends View {
+    private Drawable starDrawable;
     private Drawable background;
     private boolean shouldDrawBackground;
     private int dayOfMonth;
@@ -24,7 +25,7 @@ public class CellView extends View {
     public CellView(Context context) {
         super(context);
         init();
-        setBackgroundColor(Color.GRAY);
+        setBackgroundColor(-3355444);
         //setLayoutParams(new GridView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
     }
 
@@ -44,8 +45,8 @@ public class CellView extends View {
         showStar = false;
 
         textPaint = new Paint();
-        textPaint.setColor(Color.BLACK);
-        textPaint.setTextSize(30);
+        textPaint.setColor(Color.WHITE);
+        textPaint.setTextSize(60);
         textPaint.setTextAlign(Paint.Align.CENTER);
 
         starPaint = new Paint();
@@ -80,9 +81,10 @@ public class CellView extends View {
 
     private void drawStar(Canvas canvas) {
         // 繪製星星
-        starPaint.setColor(starColor);
-        // 为简单起见，我们将绘制一个简单的矩形作为星星的例子
-        canvas.drawRect(0, 0, getWidth() / 4, getHeight() / 4, starPaint);
+        if (starDrawable != null) {
+            starDrawable.setBounds(0, 0, getWidth(), getHeight());
+            starDrawable.draw(canvas);
+        }
     }
 
     private void drawDayOfMonth(Canvas canvas) {
@@ -102,6 +104,10 @@ public class CellView extends View {
 
     public void setStarColor(int starColor) {
         this.starColor = starColor;
+        invalidate();
+    }
+    public void setStarDrawable(Drawable starDrawable) {
+        this.starDrawable = starDrawable;
         invalidate();
     }
 }

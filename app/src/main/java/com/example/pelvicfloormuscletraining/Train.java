@@ -17,8 +17,12 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 public class Train extends AppCompatActivity {
     public Context context;
@@ -30,8 +34,16 @@ public class Train extends AppCompatActivity {
     private UUID SERVICE_UUID = UUID.fromString("6e400001-b5a3-f393-e0a9-e50e24dcca9e");
     private UUID CHARACTERISTIC_UUID_RX = UUID.fromString("6e400002-b5a3-f393-e0a9-e50e24dcca9e");
     private SharedPreferences sharedPreferences;
+    private SharedPreferences sharedPreferences_day;
+    private SharedPreferences sharedPreferences_allrecord;
     private static final String TRAINING_RECORD = "training_record";
     private static final String TODAY_TIMES = "todaytimes";
+    private static final String SUM_RECORD = "sumofrecord";
+
+    private static final String BEGIN = "begin";
+    private static final String FIRSTDAY = "firstday";
+    private static final String AllRecord = "all_record";
+    private String passday;
     private int today_times;
     private boolean mBound = false;
 
@@ -127,6 +139,28 @@ public class Train extends AppCompatActivity {
                 SharedPreferences.Editor editor = sharedPreferences.edit();
                 editor.putInt(TODAY_TIMES, today_times);
                 editor.apply();
+
+                sharedPreferences_allrecord = getSharedPreferences(AllRecord,MODE_PRIVATE);
+                sharedPreferences_day = getSharedPreferences(BEGIN, MODE_PRIVATE);
+                String today = new SimpleDateFormat("yyyy/MM/dd").format(new Date());
+                String firstday = sharedPreferences_day.getString(FIRSTDAY,"");
+                SimpleDateFormat format = new SimpleDateFormat("yyyy/MM/dd");
+                try {
+                    Date d1 = format.parse(firstday);
+                    Date d2 = format.parse(today);
+                    long diff = d2.getTime() - d1.getTime();
+                    long days = TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS);
+                    passday = Long.toString(days +1);
+
+                    Log.e("TAG", "Days between " + firstday + " and " + today + " = " + days);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                int record_times = sharedPreferences_allrecord.getInt(passday,0);
+                SharedPreferences.Editor editor_record = sharedPreferences_allrecord.edit();
+                editor_record.putInt(passday,record_times+1);
+                editor_record.apply();
+
                 Log.e("onClick", "onClick: ");
                 if (mBluetoothLeService != null && mBluetoothLeService.isConnected()) {
                     Log.e("Y", "onClick: 1" );

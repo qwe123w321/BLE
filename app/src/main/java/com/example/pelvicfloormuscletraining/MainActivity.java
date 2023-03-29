@@ -71,6 +71,7 @@ import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -80,6 +81,7 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 import javax.security.auth.login.LoginException;
 
@@ -107,11 +109,15 @@ public class MainActivity extends AppCompatActivity {
     private EditText mEditText;
     private TextView date;
     private SharedPreferences sharedPreferences;
+    private SharedPreferences sharedPreferences_allrecord;
     private static final String TRAINING_RECORD = "training_record";
     private static final String TODAY_DATE = "today_date";
-
-    private static final String START_DATE = "start_date";
     private static final String TODAY_TIMES = "todaytimes";
+    private static final String BEGIN = "begin";
+    private static final String FIRSTDAY = "firstday";
+    private static final String AllRecord = "all_record";
+    private String passday;
+
 
     private int today_times = 0;
     private ImageView first_check;
@@ -292,6 +298,35 @@ public class MainActivity extends AppCompatActivity {
         startService(intent);
         bindService(intent, mServiceConnection, BIND_AUTO_CREATE);
 
+//            //設定第一天與設定過往資料
+//        sharedPreferences = getSharedPreferences(BEGIN, MODE_PRIVATE);
+//        SharedPreferences.Editor editor_cfg = sharedPreferences.edit();
+//        editor_cfg.putString(FIRSTDAY, "2023/02/15");
+//        editor_cfg.apply();
+//        sharedPreferences_allrecord = getSharedPreferences(AllRecord, MODE_PRIVATE);
+//        for(int day=1; day<=42; day++){
+//            SharedPreferences.Editor editor_all_record = sharedPreferences_allrecord.edit();
+//            int randomNumber = (int) (Math.random() * 5);
+//            editor_all_record.putInt(Integer.toString(day), randomNumber);
+//            editor_all_record.apply();
+//        }
+        String today = new SimpleDateFormat("yyyy/MM/dd").format(new Date());
+        String firstday = sharedPreferences.getString(FIRSTDAY,"");
+        if(firstday == today ||firstday == "") {
+            Log.e("config_today", "First_Day");
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putString(FIRSTDAY, today);
+            editor.apply();
+            sharedPreferences_allrecord = getSharedPreferences(AllRecord, MODE_PRIVATE);
+            for(int day=1; day<=180; day++){
+                SharedPreferences.Editor editor_all_record = sharedPreferences_allrecord.edit();
+                editor_all_record.putInt(Integer.toString(day), 0);
+                editor_all_record.apply();
+            }
+        }
+
+
+        Log.e("TAG", "onCreate: "+ firstday);
         receivedDataCsv = new StringBuilder();
         // Register the BroadcastReceiver
         IntentFilter intentFilter = new IntentFilter();
@@ -389,28 +424,6 @@ public class MainActivity extends AppCompatActivity {
 //
 //        alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY * 30, pendingIntent);
 //    }
-
-    private void saveCsvFile(String csvData) {
-        String fileName = "received_data.csv";
-        File path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
-
-        try {
-            File file = new File(path, fileName);
-            FileOutputStream fileOutputStream = new FileOutputStream(file, true);
-            OutputStreamWriter outputStreamWriter = new OutputStreamWriter(fileOutputStream);
-            BufferedWriter bufferedWriter = new BufferedWriter(outputStreamWriter);
-            bufferedWriter.write(csvData);
-            bufferedWriter.close();
-            outputStreamWriter.close();
-            fileOutputStream.close();
-
-            Toast.makeText(this, "Data saved to " + file.getAbsolutePath(), Toast.LENGTH_SHORT).show();
-        } catch (IOException e) {
-            Toast.makeText(this, "Error saving data: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-            e.printStackTrace();
-        }
-    }
-
 
     private void checkdate_times(){
         sharedPreferences = getSharedPreferences(TRAINING_RECORD, MODE_PRIVATE);

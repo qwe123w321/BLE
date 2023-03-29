@@ -10,12 +10,11 @@
         android:id="@+id/leave"
         android:layout_width="73dp"
         android:layout_height="60dp"
-        android:layout_marginStart="322dp"
         android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"
         android:background="#00000000"
         android:scaleType="fitCenter"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.9"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/leave" />

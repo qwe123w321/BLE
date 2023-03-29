@@ -21,14 +21,16 @@
 
     <application
         android:usesCleartextTraffic="true"
+        android:theme="@style/AppTheme.Light"
         android:requestLegacyExternalStorage="true"
+        android:forceDarkAllowed="false"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/Theme.PelvicFloorMuscleTraining"
+
         tools:targetApi="31">
         <meta-data
             android:name="com.google.android.actions"

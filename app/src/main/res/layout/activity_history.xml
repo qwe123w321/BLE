@@ -8,15 +8,14 @@
 
     <ImageButton
         android:id="@+id/leave8"
-        android:layout_width="match_parent"
+        android:layout_width="73dp"
         android:layout_height="60dp"
-        android:layout_marginStart="322dp"
         android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"
         android:layout_weight="0"
         android:background="#00000000"
         android:scaleType="fitCenter"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.9"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/leave" />
@@ -24,95 +23,145 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="100dp"
+        android:layout_marginTop="50dp"
         android:orientation="vertical"
         app:layout_constraintTop_toBottomOf="@+id/leave8">
 
+        <TextView
+            android:id="@+id/month"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:text="第1個月"
+            android:textSize="35dp" />
+
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="516dp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/imageView8"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:scaleType="fitXY"
+                app:srcCompat="@drawable/checkmarkseal3x" />
+
+            <TextView
+                android:id="@+id/allstar"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:text="已獲得星數："
+                android:textSize="35dp" />
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/imageView7"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:layout_marginBottom="30dp"
+            app:srcCompat="@drawable/line2" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:orientation="vertical">
 
             <GridView
                 android:id="@+id/grid_view"
                 android:layout_width="match_parent"
-                android:layout_height="363dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
                 android:layout_weight="1"
+                android:gravity="center"
                 android:horizontalSpacing="6dp"
                 android:numColumns="5"
+                android:padding="4dp"
                 android:rowCount="6"
                 android:stretchMode="columnWidth"
                 android:verticalSpacing="6dp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="18dp">
+
+                <ImageButton
+                    android:id="@+id/btn_month1"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:layout_gravity="center"
+                    android:layout_weight="3"
+                    android:onClick="mon"
+                    android:scaleType="fitCenter"
+                    android:tag="1"
+                    app:srcCompat="@drawable/one1circle3x"
+                    android:background="#00000000"/>
+
+                <ImageButton
+                    android:id="@+id/btn_month2"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:layout_gravity="center"
+                    android:layout_weight="3"
+                    android:scaleType="fitCenter"
+                    android:tag="2"
+                    app:srcCompat="@drawable/two2circle3x"
+                    android:background="#00000000"/>
+
+                <ImageButton
+                    android:id="@+id/btn_month3"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:layout_gravity="center"
+                    android:layout_weight="3"
+                    android:scaleType="fitCenter"
+                    android:tag="3"
+                    app:srcCompat="@drawable/three3circle3x"
+                    android:background="#00000000"/>
+
+                <ImageButton
+                    android:id="@+id/btn_month4"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:layout_gravity="center"
+                    android:layout_weight="3"
+                    android:scaleType="fitCenter"
+                    android:tag="4"
+                    app:srcCompat="@drawable/four4circle3x"
+                    android:background="#00000000"/>
+
+                <ImageButton
+                    android:id="@+id/btn_month5"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:layout_gravity="center"
+                    android:layout_weight="3"
+                    android:scaleType="fitCenter"
+                    android:tag="5"
+                    app:srcCompat="@drawable/five5circle3x"
+                    android:background="#00000000"/>
+
+                <ImageButton
+                    android:id="@+id/btn_month6"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:layout_gravity="center"
+                    android:layout_weight="3"
+                    android:onClick="mon"
+                    android:scaleType="fitCenter"
+                    android:tag="6"
+                    app:srcCompat="@drawable/six6circle3x"
+                    android:background="#00000000"/>
+            </LinearLayout>
         </LinearLayout>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:padding="18dp">
-
-            <ImageButton
-                android:id="@+id/btn_month1"
-                android:layout_width="60dp"
-                android:layout_height="60dp"
-                android:layout_gravity="center"
-                android:layout_weight="3"
-                android:onClick="mon"
-                android:scaleType="fitCenter"
-                android:tag="1"
-                app:srcCompat="@drawable/one1circle3x" />
-
-            <ImageButton
-                android:id="@+id/btn_month2"
-                android:layout_width="60dp"
-                android:layout_height="60dp"
-                android:layout_gravity="center"
-                android:layout_weight="3"
-                android:scaleType="fitCenter"
-                android:tag="2"
-                app:srcCompat="@drawable/two2circle3x" />
-
-            <ImageButton
-                android:id="@+id/btn_month3"
-                android:layout_width="60dp"
-                android:layout_height="60dp"
-                android:layout_gravity="center"
-                android:layout_weight="3"
-                android:scaleType="fitCenter"
-                android:tag="3"
-                app:srcCompat="@drawable/three3circle3x" />
-
-            <ImageButton
-                android:id="@+id/btn_month4"
-                android:layout_width="60dp"
-                android:layout_height="60dp"
-                android:layout_gravity="center"
-                android:layout_weight="3"
-                android:scaleType="fitCenter"
-                android:tag="4"
-                app:srcCompat="@drawable/four4circle3x" />
-
-            <ImageButton
-                android:id="@+id/btn_month5"
-                android:layout_width="60dp"
-                android:layout_height="60dp"
-                android:layout_gravity="center"
-                android:layout_weight="3"
-                android:scaleType="fitCenter"
-                android:tag="5"
-                app:srcCompat="@drawable/five5circle3x" />
-
-            <ImageButton
-                android:id="@+id/btn_month6"
-                android:layout_width="60dp"
-                android:layout_height="60dp"
-                android:layout_gravity="center"
-                android:layout_weight="3"
-                android:onClick="mon"
-                android:scaleType="fitCenter"
-                android:tag="6"
-                app:srcCompat="@drawable/six6circle3x" />
-        </LinearLayout>
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

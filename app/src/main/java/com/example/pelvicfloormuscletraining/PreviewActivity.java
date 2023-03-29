@@ -57,7 +57,6 @@ public class PreviewActivity extends AppCompatActivity {
     private Button finishButton;
     private static final int REQUEST_PERMISSIONS_CODE = 1;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

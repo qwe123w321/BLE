@@ -21,6 +21,7 @@
             android:layout_marginTop="30dp"
             android:scaleType="fitCenter"
             android:text="預覽答案"
+            android:textSize="35dp"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:textColor="#3F51B5" />
 
