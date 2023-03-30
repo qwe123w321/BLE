@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -35,6 +36,7 @@ public class history extends AppCompatActivity {
     private int clickCount;
     private int daysPassed;
     private ImageButton M1,M2,M3,M4,M5,M6;
+    private ImageButton leave8;
     private String passday;
     private SharedPreferences sharedPreferences_day;
     private SharedPreferences sharedPreferences_allrecord;
@@ -42,7 +44,7 @@ public class history extends AppCompatActivity {
     private static final String FIRSTDAY = "firstday";
     private static final String AllRecord = "all_record";
     private long days;
-    private TextView sumofstar;
+    private TextView sumofstar,month;
     private List<ImageButton> monthButtons;
     int[] original_image = {R.drawable.one1circle3x, R.drawable.two2circle3x, R.drawable.three3circle3x, R.drawable.four4circle3x,R.drawable.five5circle3x,R.drawable.six6circle3x};
     int[] clicked_image = {R.drawable.one1circlefill3x, R.drawable.two2circlefill3x, R.drawable.three3circlefill3x, R.drawable.four4circlefill3x,R.drawable.five5circlefill3x,R.drawable.six6circlefill3x};
@@ -56,6 +58,8 @@ public class history extends AppCompatActivity {
         clickCount = getIntent().getIntExtra("clickCount", 0);
         daysPassed = (int) TimeUnit.MILLISECONDS.toDays(System.currentTimeMillis() - getInstallTime());
         sumofstar = (TextView)findViewById(R.id.allstar);
+        month = (TextView)findViewById(R.id.month);
+        leave8 = (ImageButton)findViewById(R.id.leave8);
 
         M1 = (ImageButton)findViewById(R.id.btn_month1);
         M2 = (ImageButton)findViewById(R.id.btn_month2);
@@ -87,6 +91,7 @@ public class history extends AppCompatActivity {
         gridView.setAdapter(gridAdapter);
         monthButtons.get((int)days/30).setImageResource(clicked_image[(int)days/30]);
 
+        month.setText("第"+Integer.toString((int)days/30+1)+"個月");
         sumofstar.setText("已獲得星數：" + Integer.toString(sum_star()));
 
         for (int i = 0; i < monthButtons.size(); i++) {
@@ -111,7 +116,7 @@ public class history extends AppCompatActivity {
                             //int selectedMonth = Integer.parseInt(v.getTag().toString());
                             GridAdapter gridAdapter = new GridAdapter(history.this, selectedMonth);
                             gridView.setAdapter(gridAdapter);
-
+                            month.setText("第"+Integer.toString(selectedMonth)+"個月");
                         } else {
                             // 其他按鈕，還原圖片
                             button.setImageResource(original_image[index-1]);
@@ -121,6 +126,13 @@ public class history extends AppCompatActivity {
                 }
             });
         }
+        leave8.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(history.this,MainActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 
     private int sum_star(){
